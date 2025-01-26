@@ -1,0 +1,11 @@
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\SphereShell-WithoutAir-Q1
+---------------------------------------------------------------------
+abaqus job=MagnetoGrowth-Sphere user=UEL-HardMAE-Q1.for cpus=24
+y
+
+---------------------------------------------------------------------
+
+abaqus terminate job=SubFilm-w60-h345-f3-g11
+

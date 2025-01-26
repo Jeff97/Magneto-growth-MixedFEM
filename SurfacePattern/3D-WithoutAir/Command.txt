@@ -1,0 +1,18 @@
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\SurfacePattern\3D-WithoutAir
+---------------------------------------------------------------------
+abaqus job=SubFilm-w60-h345-f3-g11 user=UEL-HardMAE-Q1.for cpus=24
+y
+
+增加硬膜的弹性模量，变形幅值大了很多，但也伴随着高周期的失稳
+加Equation，生长的时候会出现高周期。还是加上好一点
+不加equation，差别不大！
+
+发现施加强力的磁刺激会让模态趋向于我要的那个。
+那我在生长的时候就给它施加这么一个强刺激看看，自己写一个code，施加CFLoad
+
+---------------------------------------------------------------------
+
+abaqus terminate job=SubFilm-w60-h345-f3-g11
+

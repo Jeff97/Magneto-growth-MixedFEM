@@ -1,0 +1,95 @@
+*Heading
+** Nodes--------------------------------------------------------------
+*Node, NSET=AllNodes
+*INCLUDE, INPUT=Coords-All.inp
+** Elements-----------------------------------------------------------
+** User element definition, list of active dof in the first node, refer to ABAQUS's convention, "8" is pressure "11" is temperature 
+*User element, type=u3, nodes=8, coordinates=3, properties=15, variables=20
+1, 2, 3, 11, 8
+*Element, type=u3, Elset=UserElem
+*INCLUDE, INPUT=Elems-All.inp
+** Dummy element overlaid on the user elements
+*Element, type=C3D8, Elset=Dummy
+*INCLUDE, INPUT=Elems-Dummy.inp
+** Section: HomoSection
+*Solid Section, elset=Dummy, material=Dummy
+** SETS --------------------------------------------------------------
+*INCLUDE, INPUT=Elems-Nodes-Set.inp
+*Elset, elset=Sample-Dummy, generate
+ 1000001,  1000512,  1
+** MATERIALS ---------------------------------------------------------
+*PARAMETER
+Ef = 50000*(2.0+2*0.499)
+Nu = 0.499
+Bmag = 500.0
+Mr = 100
+gFactor = 1.05
+** UEL parameters
+** Em(Pa), Nu, Mr1(kA/m), Mr2(kA/m), Mr3(kA/m), Ba1(mT), Ba2(mT), Ba3(mT), 
+** gFactor, MaterialFlag
+*UEL Property, elset=Air
+1.e-10, <Nu>, 0.0, 0.0, 0.0, 0.0, 0.0, -<Bmag>,
+<gFactor>, 0.0
+*UEL Property, elset=Sample
+<Ef>, <Nu>, 0.0, 0.0, 0.0, 0.0, 0.0, -<Bmag>,
+<gFactor>, 1.0
+*UEL Property, elset=SampleSec1
+<Ef>, <Nu>, 0.0, 0.0, <Mr>, 0.0, 0.0, -<Bmag>,
+<gFactor>, 1.0
+** DUMMY MATERIAL
+*MATERIAL,NAME=Dummy
+*Hyperelastic, Neo Hooke
+1.e-10, 1.e10
+*User output variables
+20
+** Constraint --------------------------------------------------------
+** couple the air nodes with the sample boundary nodes
+*EQUATION, INPUT=EquationAir.inp
+** STEP1 -------------------------------------------------------------
+*STEP, name=Growth, nlgeom=YES, inc=200
+*Static
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.5, 1., 1e-05, 0.5
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+ZeroUx, 1,1
+ZeroUy, 2,2
+BotFace, 3,3
+TopFace, 1,2
+*Boundary
+AirBoundary, 11,11
+Air, 8,8
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step
+** STEP2 -------------------------------------------------------------
+*STEP, name=Loading1, nlgeom=YES, inc=200
+*Static
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.25, 3., 1e-05, 0.25
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+ZeroUx, 1,1
+ZeroUy, 2,2
+BotFace, 3,3
+TopFace, 1,2
+*Boundary
+AirBoundary, 11,11
+Air, 8,8
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step

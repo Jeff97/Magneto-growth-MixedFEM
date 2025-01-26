@@ -1,0 +1,42 @@
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\ConvergenceTest-Air-Q1\Block8
+
+abaqus job=Block-8 user=UEL-HardMAE-Q1.for cpus=12
+y
+
+----------------------------------------------------------------------
+
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\ConvergenceTest-Air-Q1\Block64
+
+abaqus job=Block-64 user=UEL-HardMAE-Q1.for cpus=12
+y
+
+----------------------------------------------------------------------
+
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\ConvergenceTest-Air-Q1\Block512
+
+abaqus job=Block-512 user=UEL-HardMAE-Q1.for cpus=12
+y
+
+----------------------------------------------------------------------
+
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\ConvergenceTest-Air-Q1\Block1728
+
+abaqus job=Block-1728 user=UEL-HardMAE-Q1.for cpus=12
+y
+
+----------------------------------------------------------------------
+
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\ConvergenceTest-Air-Q1\Block4096
+
+abaqus job=Block-4096 user=UEL-HardMAE-Q1.for cpus=12
+y

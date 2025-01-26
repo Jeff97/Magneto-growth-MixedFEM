@@ -1,0 +1,15 @@
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\Cylinder-WithoutAir-Q1
+---------------------------------------------------------------------
+abaqus job=Cylinder-g08 user=UEL-HardMAE-Q1.for cpus=12
+y
+abaqus job=Cylinder-g10 user=UEL-HardMAE-Q1.for cpus=12
+y
+abaqus job=Cylinder-g12 user=UEL-HardMAE-Q1.for cpus=12
+y
+
+---------------------------------------------------------------------
+
+abaqus terminate job=SubFilm-w60-h345-f3-g11
+

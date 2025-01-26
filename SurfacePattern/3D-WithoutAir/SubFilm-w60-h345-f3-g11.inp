@@ -1,0 +1,194 @@
+*Heading
+** Nodes--------------------------------------------------------------
+*Node, NSET=AllNodes
+*INCLUDE, INPUT=Coords-All.inp
+** Elements-----------------------------------------------------------
+** User element definition, list of active dof in the first node, refer to ABAQUS's convention, "8" is pressure "11" is temperature 
+*User element, type=u3, nodes=8, coordinates=3, properties=15, variables=20
+1, 2, 3, 11, 8
+*Element, type=u3, Elset=UserElem
+*INCLUDE, INPUT=Elems-All.inp
+** Dummy element overlaid on the user elements
+*Element, type=C3D8, Elset=Dummy
+*INCLUDE, INPUT=Elems-Dummy.inp
+** Section: HomoSection
+*Solid Section, elset=Dummy, material=Dummy
+** SETS --------------------------------------------------------------
+*INCLUDE, INPUT=Elems-Nodes-Set.inp
+*Elset, elset=Film-Dummy, generate
+  108065,  110368,      1
+*Elset, elset=Substrate-Dummy, generate
+    100001,  108064,     1
+** MATERIALS ---------------------------------------------------------
+*PARAMETER
+Ef = 101562.0
+Es = 3576.135714
+Nu = 0.499
+Bmag = 100.0
+Mr = 44.4096
+gFactor = 1.08
+AmpForce = 1500.0
+** UEL parameters
+** Em(Pa), Nu, Mr1(kA/m), Mr2(kA/m), Mr3(kA/m), Ba1(mT), Ba2(mT), Ba3(mT), 
+** gFactor, MaterialFlag
+** *UEL Property, elset=Air
+** 1.e-10, <Nu>, 0.0, 0.0, 0.0, 0.0, 0.0, <Bmag>,
+** <gFactor>, 0.0
+*UEL Property, elset=Film-Section1
+<Ef>, <Nu>, <Mr>, <Mr>, 0.0, 0.0, 0.0, <Bmag>,
+<gFactor>, 1.0
+*UEL Property, elset=Film-Section2
+<Ef>, <Nu>, <Mr>, -<Mr>, 0.0, 0.0, 0.0, <Bmag>,
+<gFactor>, 1.0
+*UEL Property, elset=Film-Section3
+<Ef>, <Nu>, -<Mr>, -<Mr>, 0.0, 0.0, 0.0, <Bmag>,
+<gFactor>, 1.0
+*UEL Property, elset=Film-Section4
+<Ef>, <Nu>, -<Mr>, <Mr>, 0.0, 0.0, 0.0, <Bmag>,
+<gFactor>, 1.0
+*UEL Property, elset=Substrate
+<Es>, <Nu>, 0.0, 0.0, 0.0, 0.0, 0.0, <Bmag>,
+<gFactor>, 2.0
+** Em=359.76 kPa, Nu=0.499 --> Gm=120kPa
+** DUMMY MATERIAL
+*MATERIAL,NAME=Dummy
+*Hyperelastic, Neo Hooke
+1.e-10, 1.e10
+*User output variables
+20
+*Amplitude, name=Perturbation1
+    0.0, 0.0,  0.1, 0.0,  0.99, <AmpForce>,  1.0, 0.0
+*Amplitude, name=Perturbation2
+    0.0, 0.0,  0.95, 0.0,  0.99, -<AmpForce>,  1.0, 0.0
+** Constraint --------------------------------------------------------
+** couple the air nodes with the sample boundary nodes
+*EQUATION, INPUT=EquationFilm-DispX.inp
+*EQUATION, INPUT=EquationFilm-DispY.inp
+*EQUATION, INPUT=EquationFilm-DispZ.inp
+** Geometry imperfection ---------------------------------------------
+** *Imperfection, File=Buckle-3D-WithoutAir, Step=1
+** 5, 0.05
+** STEP1 -------------------------------------------------------------
+*STEP, name=Growth, nlgeom=YES, inc=200
+*Static, stabilize, factor=0.5, allsdtol=0, continue=NO
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.1, 1., 1e-05, 0.1
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+SampleZeroUX, 1,1
+SampleZeroUY, 2,2
+SampleBot, 3,3
+*Boundary
+WholeSample, 11,11
+*CLOAD, amplitude=Perturbation1
+*INCLUDE, INPUT=Load-Film.inp
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step
+** STEP2 -------------------------------------------------------------
+*STEP, name=LoadingPositive, nlgeom=YES, inc=200, extrapolation=linear
+*Static, stabilize, factor=0.005, allsdtol=0, continue=NO
+** factor: a small amount of stabilization to help with convergence
+** allsdtol: stabilization is applied until the solution error is below this value
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.1, 1., 1e-05, 0.1
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+SampleZeroUX, 1,1
+SampleZeroUY, 2,2
+SampleBot, 3,3
+*Boundary
+WholeSample, 11,11
+** *CLOAD, amplitude=Perturbation2
+** *INCLUDE, INPUT=Load-Film.inp
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step
+** STEP3 -------------------------------------------------------------
+*STEP, name=Unload1, nlgeom=YES, inc=200, extrapolation=linear
+*Static, stabilize, factor=5.0, allsdtol=0, continue=NO
+** factor: a small amount of stabilization to help with convergence
+** allsdtol: stabilization is applied until the solution error is below this value
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.25, 1., 1e-05, 0.25
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+SampleZeroUX, 1,1
+SampleZeroUY, 2,2
+SampleBot, 3,3
+*Boundary
+WholeSample, 11,11
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step
+** STEP4 -------------------------------------------------------------
+*STEP, name=LoadingNegative, nlgeom=YES, inc=200, extrapolation=linear
+*Static, stabilize, factor=0.005, allsdtol=0, continue=NO
+** factor: a small amount of stabilization to help with convergence
+** allsdtol: stabilization is applied until the solution error is below this value
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.125, 1., 1e-05, 0.125
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+SampleZeroUX, 1,1
+SampleZeroUY, 2,2
+SampleBot, 3,3
+*Boundary
+WholeSample, 11,11
+** *CLOAD, amplitude=Perturbation1
+** *INCLUDE, INPUT=Load-Film.inp
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step
+** STEP5 -------------------------------------------------------------
+*STEP, name=Unload2, nlgeom=YES, inc=200, extrapolation=linear
+*Static, stabilize, factor=5.0, allsdtol=0, continue=NO
+** factor: a small amount of stabilization to help with convergence
+** allsdtol: stabilization is applied until the solution error is below this value
+** *COUPLED TEMPERATURE-DISPLACEMENT, STEADY STATE
+** <init_step_size>, <end_time>, <min_step_size>, <max_step_size>
+0.25, 1., 1e-05, 0.25
+*CONTROLS, PARAMETERS=TIME INCREMENTATION
+24,30,31,70,70
+** BOUNDARY CONDITIONS -----------------------------------------------
+*Boundary
+SampleZeroUX, 1,1
+SampleZeroUY, 2,2
+SampleBot, 3,3
+*Boundary
+WholeSample, 11,11
+** OUTPUT REQUESTS ---------------------------------------------------
+*Output, field, freq=1
+*Node Output, NSET=AllNodes
+ U, COORD
+*Element Output, elset=Dummy
+ UVARM
+*End Step

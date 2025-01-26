@@ -1,0 +1,31 @@
+T:
+
+cd T:\Abaqus-Temp\20240506MagnetoGrowth\Cylinder-Air-Phi0-Q1
+
+---------------------------------------------------------------------
+abaqus job=Cylinder-g08-Gm60 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g10-Gm60 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g12-Gm60 user=UEL-HardMAE-Q1.for cpus=4
+y
+
+
+abaqus job=Cylinder-g08-Gm120 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g10-Gm120 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g12-Gm120 user=UEL-HardMAE-Q1.for cpus=4
+y
+
+abaqus job=Cylinder-g08-Gm240 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g10-Gm240 user=UEL-HardMAE-Q1.for cpus=4
+y
+abaqus job=Cylinder-g12-Gm240 user=UEL-HardMAE-Q1.for cpus=4
+y
+
+---------------------------------------------------------------------
+
+abaqus terminate job=Cylinder-g08-Gm120
+
