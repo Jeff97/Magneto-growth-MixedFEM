@@ -2,12 +2,13 @@
 ! ABAQUS user Subroutine UEL for incompressibel electro growth material
 ! in 3D case. Regarding to the formulation of this UEL, please refer to
 ! these papers: 
+! Coupled magneto-mechanical growth in hyperelastic materials: Surface patterns modulation and shape control in bio-inspired structures 10.1016/j.jmps.2025.106089
 ! A robust and computationally efficient finite element framework for coupled electromechanics. 10.1016/j.cma.2020.113443
 ! On the advantages of mixed formulation and higher-order elements for computational morphoelasticity. 10.1016/j.jmps.2020.104289
 ! A numerical framework for the simulation of coupled electromechanical growth 10.1016/j.cma.2023.116128
 ! UEL developed by Zhanfeng Li 20250126 in Guangzhou
 ! ---------------------------------------------------------------------
-! Anyone use this UEL or have inquires, please email Zhanfeng Li 
+! Anyone use this UEL or have inquires, please email Zhanfeng
 ! through zhanfengli@scut.edu.cn to get him noticed. Thank you! 
 ! A FORTRAN 77 statement may be up to 40 lines long! 
 ! Columns 7-72 contain the FORTRAN instructions.

@@ -6,6 +6,8 @@ Here, we provide some supplementary files for the manuscript[1].
 
 [1] Coupled magneto-mechanical growth in hyperelastic materials: surface patterns modulation and shape control in bio-inspired structures, Zhanfeng Li, Yafei Wang, Zuodong Wang, Chennakesava Kadapa, Mokarram Hossain, Xiaohu Yao, Jiong Wang
 
+[10.1016/j.jmps.2025.106089](https://www.sciencedirect.com/science/article/pii/S0022509625000651)
+
 # Simulation(needs expertise)
 
 Each folder also contains necessary files to run the simulation using ABAQUS. To run the simulation, please make sure 
